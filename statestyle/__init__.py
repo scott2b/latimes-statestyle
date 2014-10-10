@@ -5,9 +5,7 @@ from .data import CROSSWALK
 def get(value):
     """
     Accepts a value and tries to match it a U.S. state or territory.
-
     Works with postal codes, full names, AP abbreviations and FIPS codes.
-
     Return an object with metadata about the state.
     """
     # Strip leading zeroes of any fips that come in as strings
@@ -15,12 +13,7 @@ def get(value):
         value = int(value)
     except ValueError:
         pass
-    # Clean up any strings
-    if _is_string(value):
-        value = value.strip().lower()
-    # Convert numbers back to strings
-    elif isinstance(value, (int, float)):
-        value = str(value)
+    value = str(value).replace('.', '').strip().lower()
     try:
         return State(**CROSSWALK[value])
     except KeyError:
@@ -47,14 +40,3 @@ class State(object):
 
     def __unicode__(self):
         return self.name
-
-
-def _is_string(possible_string):
-    """
-    Checks if an object is a string.
-    Works with Python2 and Python3.
-    """
-    try:
-        return isinstance(possible_string, basestring)
-    except NameError:
-        return isinstance(possible_string, str)
